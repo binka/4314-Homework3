@@ -67,33 +67,32 @@ def create_matrix(seq):
     seq1 = seq[0]
     seq2 = seq[1]
 
-    Matrix = [[0 for x in range(len(seq1))] for x in range(len(seq2))]
+    Matrix = [[0 for x in range(len(seq1)+1)] for x in range(len(seq2)+1)]
 
     #initialize column 1
-    for i in range(len(seq2)):
+    for i in range(len(seq2)+1):
         Matrix[i][0] = i
     #initialize row 1
-    for j in range(len(seq1)):
+    for j in range(len(seq1)+1):
         Matrix[0][j] = j
 
-    for i in range(1, 3):
-        for j in range(1, 3):
+    for i in range(1, len(seq1)+1):
+        for j in range(1, len(seq2)+1):
             top = Matrix[i][j-1]
             left = Matrix[i-1][j]
             diag = Matrix[i-1][j-1]
 
-            Matrix[i][j] = min((diag + subst_score(seq1[i-1], seq2[j-1])), left, top)
+            Matrix[i][j] = min((diag + subst_score(seq1[i-1], seq2[j-1])), left + 1, top + 1)
 
     print_Matrix(Matrix)
 
 
 def subst_score(A, B):
     score = 0
-    print A, B
-    if A != B:
-        score = score + 1
-    else:
+    if A == B:
         score = 0
+    else:
+        score = score + 1
 
     return score
 
@@ -131,4 +130,4 @@ if __name__ == '__main__':
     length = len(seq)
     for i in range(0, length, 2):
         edit_distance = levenshtein(seq[i],seq[i+1])
-        #print edit_distance
+        print edit_distance
