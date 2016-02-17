@@ -59,7 +59,52 @@ def levenshtein(s1, s2):
             current_row.append(min(insertions, deletions, substitutions))
         previous_row = current_row
 
+    #print '\n'
     return previous_row[-1]
+
+def create_matrix(seq):
+
+    seq1 = seq[0]
+    seq2 = seq[1]
+
+    Matrix = [[0 for x in range(len(seq1))] for x in range(len(seq2))]
+
+    #initialize column 1
+    for i in range(len(seq2)):
+        Matrix[i][0] = i
+    #initialize row 1
+    for j in range(len(seq1)):
+        Matrix[0][j] = j
+
+    for i in range(1, 3):
+        for j in range(1, 3):
+            top = Matrix[i][j-1]
+            left = Matrix[i-1][j]
+            diag = Matrix[i-1][j-1]
+
+            Matrix[i][j] = min((diag + subst_score(seq1[i-1], seq2[j-1])), left, top)
+
+    print_Matrix(Matrix)
+
+
+def subst_score(A, B):
+    score = 0
+    print A, B
+    if A != B:
+        score = score + 1
+    else:
+        score = 0
+
+    return score
+
+
+
+
+
+
+def print_Matrix(matrix):
+    for i in matrix:
+        print i
 
 def read_fasta_file(filename):
     f = open(filename, 'r')
@@ -77,14 +122,13 @@ def read_fasta_file(filename):
             if sequence:
                 sequences.append(sequence)
             sequence = ""
-    print len(sequences)
     return sequences
 
 if __name__ == '__main__':
     filename = parsing()
     seq = read_fasta_file(filename)
+    create_matrix(seq)
     length = len(seq)
-    print type(length)
     for i in range(0, length, 2):
         edit_distance = levenshtein(seq[i],seq[i+1])
-        print edit_distance
+        #print edit_distance
